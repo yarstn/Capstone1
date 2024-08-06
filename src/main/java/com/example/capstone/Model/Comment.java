@@ -4,11 +4,9 @@ package com.example.capstone.Model;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 import lombok.AllArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
 public class Comment {
     private int id;

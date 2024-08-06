@@ -35,4 +35,13 @@ public class MerchantService {
         }
         return false;
     }
+    public Merchant getMerchantById(int id) {
+        for (int i = 0; i < merchants.size(); i++) {
+            if (merchants.get(i).getId() == id) {
+                return merchants.get(i);
+
+            }
+        }
+        return null;
+    }
 }

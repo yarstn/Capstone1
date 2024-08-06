@@ -68,13 +68,14 @@ public class ProductController {
         return ResponseEntity.status(400).body("Transaction failed");
     }
     @PutMapping("/discount/{productId}")
-    public ResponseEntity applyDiscount(@PathVariable int productId) {
-        Map<String, Product> response = productService.applyDiscount(productId);
+    public ResponseEntity applyDiscount(@PathVariable int marchentId,@PathVariable int productId) {
+        Map response = productService.applyDiscount(marchentId,productId);
         if (response != null) {
             return ResponseEntity.status(200).body(response);
         }
         return ResponseEntity.status(400).body("Product not found or discount not applicable");
     }
+
     @GetMapping("/search/{name}")
     public ResponseEntity searchProducts(@PathVariable String name) {
         List<Product> products;
@@ -88,6 +89,14 @@ public class ProductController {
         }
         return ResponseEntity.status(400).body("No products found matching the criteria");
     }
-    //rate
+    //similar product
+    @GetMapping("/recommend/{productId}")
+    public ResponseEntity recommendSimilarProducts(@PathVariable int productId) {
+        List<Product> similarProducts = productService.recommendSimilarProducts(productId);
+        if (!similarProducts.isEmpty()) {
+            return ResponseEntity.ok(similarProducts);
+        }
+        return ResponseEntity.status(404).body("No similar products found or product not found");
+    }
 
 }

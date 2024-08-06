@@ -1,5 +1,6 @@
 package com.example.capstone.Service;
 
+import com.example.capstone.Model.Merchant;
 import com.example.capstone.Model.MerchantStock;
 import com.example.capstone.Model.Product;
 import com.example.capstone.Model.User;
@@ -16,6 +17,7 @@ import java.util.Map;
 public class ProductService {
     private final UserService userService;
     private final MerchantStockService merchantStockService;
+    private final MerchantService merchantService;
 
 
     ArrayList<Product> products = new ArrayList<>();
@@ -91,7 +93,9 @@ public Product getProduct(int id) {
         return false;
     }
 
-    public Map<String, Product> applyDiscount(int productId) {
+    public Map applyDiscount(int marchentId,int productId) {
+        Merchant merchant = merchantService.getMerchantById(marchentId);
+        if (merchant.getId() == marchentId){
         for (Product product : products) {
             if (product.getId() == productId) {
                 if (product.getPrice() > 200) {
@@ -104,8 +108,24 @@ public Product getProduct(int id) {
                     return response;
                 }
             }
-        }
+        }}
         return null;
+    }
+    //similar product
+    public List<Product> recommendSimilarProducts(int productId) {
+        Product targetProduct = getProduct(productId);
+        if (targetProduct == null) {
+            return new ArrayList<>();
+        }
+        List<Product> similarProducts = new ArrayList<>();
+        for (Product product : products) {
+            if (!product.equals(targetProduct) && product.getCategoryId()==(targetProduct.getCategoryId())
+                    && Math.abs(product.getPrice() - targetProduct.getPrice()) <= 50) {
+                similarProducts.add(product);
+            }
+        }
+
+        return similarProducts;
     }
     //search
     public List<Product> searchProductsByName(String name) {

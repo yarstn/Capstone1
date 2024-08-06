@@ -25,15 +25,19 @@ public class CategoryController {
         return ResponseEntity.status(200).body(categoryService.getCategories());
     }
     //ADD DONE
-    @PostMapping("/add")
-  public ResponseEntity addCategory(@Valid @RequestBody Category category, Errors errors) {
+    @PostMapping("/admin/{userId}")
+    public ResponseEntity addCategory(@PathVariable int userId, @Valid @RequestBody Category category,Errors errors) {
         if (errors.hasErrors()) {
             String errorMessage = errors.getAllErrors().get(0).getDefaultMessage();
             return ResponseEntity.status(400).body(errorMessage);
         }
-        categoryService.addCategory(category);
-        return ResponseEntity.status(201).body("category added successfully");
+        boolean isAdded = categoryService.addCategory(userId,category);
+        if (isAdded) {
+            return ResponseEntity.status(201).body("category added successfully");
+        }
+        return ResponseEntity.status(400).body("category update failed, only for Admin");
     }
+
     //UPDATE DONE
     @PutMapping("/update/{id}")
     public ResponseEntity updateCategory(@PathVariable int id, @Valid @RequestBody Category category) {
@@ -44,36 +48,39 @@ public class CategoryController {
        return ResponseEntity.status(400).body("category update failed");
     }
     //DELETE DONE
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity deleteCategory(@PathVariable int id) {
-        boolean isCategoryDeleted = categoryService.deleteCategory(id);
-        if (isCategoryDeleted) {
-            return ResponseEntity.status(201).body("category deleted successfully");
-        }
-        return ResponseEntity.status(400).body("category delete failed");
-    }
-
-
-    //endpoint to check if the role is admin he can add category and delete it
-    @PostMapping("/admin/{userId}")
-    public ResponseEntity updateCategoryAdmin(@PathVariable int userId, @Valid @RequestBody Category category) {
-        boolean isAdded = categoryService.adminAddCategory(userId,category);
-        if (isAdded) {
-            return ResponseEntity.status(201).body("category added successfully");
-        }
-        return ResponseEntity.status(400).body("category update failed, only for Admin");
-}
-@DeleteMapping("/admin/{userId}/{id}")
-    public ResponseEntity deleteCategoryAdmin(@PathVariable int userId, @PathVariable int id) {
+    @DeleteMapping("/admin/{userId}/{id}")
+    public ResponseEntity deleteCategory(@PathVariable int userId, @PathVariable int id) {
         boolean isDeleted = categoryService.adminRemoveCategory(userId, id);
         if (isDeleted) {
             return ResponseEntity.status(201).body("category deleted successfully");
         }
         return ResponseEntity.status(400).body("category delete failed, only for Admin");
 
-}
+    }
 
 }
+
+
+//    //endpoint to check if the role is admin he can add category and delete it
+//    @PostMapping("/admin/{userId}")
+//    public ResponseEntity updateCategoryAdmin(@PathVariable int userId, @Valid @RequestBody Category category) {
+//        boolean isAdded = categoryService.adminAddCategory(userId,category);
+//        if (isAdded) {
+//            return ResponseEntity.status(201).body("category added successfully");
+//        }
+//        return ResponseEntity.status(400).body("category update failed, only for Admin");
+//}
+//@DeleteMapping("/admin/{userId}/{id}")
+//    public ResponseEntity deleteCategoryAdmin(@PathVariable int userId, @PathVariable int id) {
+//        boolean isDeleted = categoryService.adminRemoveCategory(userId, id);
+//        if (isDeleted) {
+//            return ResponseEntity.status(201).body("category deleted successfully");
+//        }
+//        return ResponseEntity.status(400).body("category delete failed, only for Admin");
+//
+//}
+
+
 
 
 

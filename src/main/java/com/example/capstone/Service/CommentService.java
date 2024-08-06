@@ -18,7 +18,7 @@ public class CommentService {
 
         Product product = productService.getProduct(productId);
         System.out.println(product);
-        if (product != null) {
+        if (product != null && product.getId()== productId) {
             comments.add(comment);
             product.setComments(comments);
 
